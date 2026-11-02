@@ -1,0 +1,23 @@
+# Publishes on a version tag. Enable automated publishing for this repo and tag
+# pattern on pub.dev first: pub.dev authenticates this workflow with OIDC, so no
+# secret is stored here.
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter pub publish --force
